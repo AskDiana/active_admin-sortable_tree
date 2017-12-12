@@ -1,6 +1,5 @@
 module ActiveAdmin::SortableTree
   module ControllerActions
-
     attr_accessor :sortable_options
 
     def sortable(options = {})
@@ -24,31 +23,32 @@ module ActiveAdmin::SortableTree
       collection_action :sort, :method => :post do
         resource_name = ActiveAdmin::SortableTree::Compatibility.normalized_resource_name(active_admin_config.resource_name)
 
-        records = []
-        params[resource_name].each_pair do |resource, parent_resource|
-          parent_resource = resource_class.find(parent_resource) rescue nil
-          records << [resource_class.find(resource), parent_resource]
+        records = params[resource_name].each_pair.map do |resource, parent_resource|
+          record        = resource_class.find(resource)
+          parent_record = resource_class.find(parent_resource) rescue nil
+
+          [record, parent_record]
         end
 
-        errors = []
+        success = true
+
         ActiveRecord::Base.transaction do
-          records.each_with_index do |(record, parent_record), position|
-            record.send "#{options[:sorting_attribute]}=", position
-            if options[:tree]
-              record.send "#{options[:parent_method]}=", parent_record
-            end
-            errors << {record.id => record.errors} if !record.save
+          begin
+            resource_class.resort(records)
+          rescue => err
+            success = false
+
+            raise err
           end
         end
-        if errors.empty?
+
+        if success
           head 200
         else
           render json: errors, status: 422
         end
       end
-
     end
-
   end
 
   ::ActiveAdmin::ResourceDSL.send(:include, ControllerActions)

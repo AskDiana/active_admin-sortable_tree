@@ -21,6 +21,8 @@ module ActiveAdmin
         instance_eval &page_presenter.block if page_presenter.block
 
         add_class "index"
+        add_class "index_as_sortable"
+
         build_list
       end
 
