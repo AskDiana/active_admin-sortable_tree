@@ -30,22 +30,24 @@ module ActiveAdmin::SortableTree
           [record, parent_record]
         end
 
-        success = true
+        success = nil
 
         ActiveRecord::Base.transaction do
           begin
             resource_class.resort(records)
-          rescue => err
-            success = false
 
-            raise err
+            success = true
+          rescue => err
+            Rails.logger.error err
+
+            success = false
           end
         end
 
         if success
           head 200
         else
-          render json: errors, status: 422
+          head 422
         end
       end
     end
