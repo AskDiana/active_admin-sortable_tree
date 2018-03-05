@@ -2,12 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.0] - 2017-10-17
+## [2.0.0] - 2018-01-22
 
 ### Changed
 
+- Depend on same version of `jquery-ui-rails` as ActiveAdmin
 - Update dependencies to only support ActiveAdmin `< 1.1.0` because `v1.1.0`
   [dropped its dependency on `jquery-ui-rails`](https://github.com/activeadmin/activeadmin/blob/master/CHANGELOG.md).
+- Remove usage of bourbon mixin; instead rely on ActiveAdmin's utilities mixin
+  (fixes #73)
+
+### Removed
+
+- Remove support for Rails 3.2
+- Remove support for ActiveAdmin 0.6.6
+
+### Upgrading from 1.0.0
+
+It is suggested (but not required) to manually include the JavaScript and
+stylesheet to your manifest files in preparation for ActiveAdmin v2.0. See the
+Installation section of the [README.md](README.md#installation) for instructions.
 
 ## [1.0.0] - 2017-06-01
 
