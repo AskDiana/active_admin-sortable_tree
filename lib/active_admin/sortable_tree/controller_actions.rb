@@ -23,7 +23,7 @@ module ActiveAdmin::SortableTree
       collection_action :sort, :method => :post do
         resource_name = ActiveAdmin::SortableTree::Compatibility.normalized_resource_name(active_admin_config.resource_name)
 
-        records = params[resource_name].each_pair.map do |resource, parent_resource|
+        records = params[resource_name].to_unsafe_hash.each_pair.map do |resource, parent_resource|
           record        = resource_class.find(resource)
           parent_record = resource_class.find(parent_resource) rescue nil
 
